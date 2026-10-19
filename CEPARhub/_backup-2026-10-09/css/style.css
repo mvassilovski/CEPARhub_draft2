@@ -1,0 +1,628 @@
+/* ===========================================================
+   CEPAR@Tufts - brand system
+   pine  #1F5D4C   (primary)
+   clay  #B4552F   (accent)
+
+   Contrast, measured against the surface each colour actually
+   sits on (WCAG 2.1 AA needs 4.5:1 for body text, 3:1 for large
+   text and for UI boundaries):
+
+     pine      on paper      7.7:1   AAA
+     line-control border    3.3:1   AA  (non-text, WCAG 1.4.11)
+     clay      on paper      4.9:1   AA
+     clay-deep on clay-tint  6.2:1   AA     <- clay itself is 4.2 there, so text on a
+     pine      on pine-tint  6.5:1   AA        tinted chip always uses the -deep value
+     ink-soft  on paper      6.8:1   AA
+     ink       on paper     14.9:1   AAA
+     on-pine   on pine       7.7:1   AAA
+     amber     on amber-tint 4.6:1   AA
+
+   Never type a raw hex into a page.
+
+   Four display settings live on the <html> element, each set by the
+   accessibility panel in the header and remembered in localStorage:
+
+     data-text="large"      base size 16px -> 18px
+     data-contrast="high"   softened ink and hairlines resolve to full strength
+     data-motion="reduce"   transitions and smooth scrolling off
+     data-theme="dark"      the whole palette inverts
+
+   All four work by overriding tokens, never by overriding rules, so a
+   new component inherits every setting the moment it is written. That
+   is why nothing below this block may contain a literal colour: a raw
+   hex is a value that cannot follow the theme, and in dark mode it is
+   the thing that breaks. Font sizes are in rem for the same reason,
+   plus one of its own - a px size ignores the reader's own browser
+   setting, which many people have already changed before arriving.
+   =========================================================== */
+
+:root{
+  --pine: #1F5D4C;
+  --pine-deep: #123C31;
+  --pine-tint: #E7F0EC;
+  --clay: #B4552F;
+  --clay-deep: #8C3F21;
+  --clay-tint: #F8EAE3;
+  --ink: #1C2621;
+  --ink-soft: #4F5D57;
+  --paper: #FFFFFF;
+  --paper-soft: #F5F8F6;
+  --line: #DCE4DF;
+  --line-strong: #B9C7C0;   /* decorative - card and panel edges */
+  --line-control: #7E938A;  /* 3.3:1 against paper - every interactive control's border,
+                               which WCAG 1.4.11 needs at 3:1 to be identifiable */
+  --amber: #8A6417;
+  --amber-tint: #F5EEDD;
+
+  /* Role tokens. Pine is dark in the light theme and light in the dark
+     one, so "white on pine" is only true half the time. Anything sitting
+     on a filled surface reads its colour from here instead. */
+  --on-pine: #FFFFFF;        /* text and icons on a pine fill */
+  --band-bg: var(--pine);    /* the closing band */
+  --band-ink: #FFFFFF;
+  --band-ink-soft: rgba(255,255,255,.88);
+  --band-btn-bg: #FFFFFF;
+  --band-btn-ink: var(--pine-deep);
+  --band-btn-hover: var(--pine-tint);
+  --proto-bg: var(--pine-deep);   /* the prototype notice */
+  --proto-ink: #E7F0EC;
+  --proto-accent: #F3C08F;
+  --shadow: 0 10px 34px rgba(18,60,49,.14);
+
+  --radius: 12px;
+  --maxw: 1240px;
+  --rail: clamp(258px, 26vw, 340px);
+  --motion: .14s;            /* every transition reads its duration from here */
+}
+
+/* ---- dark, verified the same way the light palette was ----
+     ink        on paper       15.9:1   AAA
+     ink-soft   on paper        9.6:1   AAA
+     pine       on paper        9.2:1   AAA
+     clay       on paper        7.1:1   AAA
+     pine       on pine-tint    7.0:1   AAA
+     clay-deep  on clay-tint    7.8:1   AAA
+     amber      on amber-tint   7.6:1   AAA
+     on-pine    on pine         9.2:1   AAA
+     band-ink   on band-bg     12.1:1   AAA
+     line-control border        5.7:1   AA  (non-text)
+   Headings use pine-deep, so in this theme pine-deep is the lightest
+   pine rather than the darkest. The name describes its job on the page,
+   not its lightness, which is what lets every heading rule stay as is. */
+[data-theme="dark"]{
+  --pine: #7FC4AC;
+  --pine-deep: #A9DCC7;
+  --pine-tint: #1B2F28;
+  --clay: #E08A5F;
+  --clay-deep: #F0A87E;
+  --clay-tint: #33201A;
+  --ink: #E8EFEA;
+  --ink-soft: #AFBDB6;
+  --paper: #0E1411;
+  --paper-soft: #161D19;
+  --line: #242E29;
+  --line-strong: #35423C;
+  --line-control: #7E938A;
+  --amber: #D9B063;
+  --amber-tint: #2A2416;
+
+  --on-pine: #0E1411;
+  --band-bg: var(--pine-tint);
+  --band-ink: var(--ink);
+  --band-ink-soft: var(--ink-soft);
+  --band-btn-bg: var(--pine-deep);
+  --band-btn-ink: #0E1411;
+  --band-btn-hover: var(--pine);
+  --proto-bg: #121916;
+  --proto-ink: #A9DCC7;
+  --proto-accent: #E8B98E;
+  --shadow: 0 10px 34px rgba(0,0,0,.55);
+  color-scheme: dark;
+}
+
+/* High contrast retires the softened values rather than inventing new
+   ones: grey body text resolves to full ink, and hairlines drawn at
+   1.4:1 for texture resolve to a border you can actually see. */
+[data-contrast="high"]{
+  --ink-soft: var(--ink);
+  --line: var(--line-control);
+  --line-strong: var(--line-control);
+  --band-ink-soft: var(--band-ink);
+}
+[data-contrast="high"]:not([data-theme="dark"]){ --line-control: #3F4C46; }
+[data-contrast="high"][data-theme="dark"]{ --line-control: #C6D3CD; }
+[data-contrast="high"] .tag{ border-color: var(--line-control); }
+[data-contrast="high"] a{ text-underline-offset: 3px; }
+[data-contrast="high"] .read p a, [data-contrast="high"] .person p a{ text-decoration: underline; }
+
+/* 16px -> 18px. Every size on the page is a multiple of this one. */
+[data-text="large"]{ font-size: 112.5%; }
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+
+/* The toggle and the OS preference say the same thing, so they are
+   honoured by the same rule. The toggle is here because a browser
+   setting is not always reachable on someone else's machine. */
+[data-motion="reduce"]{ --motion: 0s; scroll-behavior: auto; }
+[data-motion="reduce"] *,
+[data-motion="reduce"] *::before,
+[data-motion="reduce"] *::after{
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  :root{ --motion: 0s; }
+}
+html, body{ overflow-x: hidden; max-width: 100%; }
+body{
+  margin:0;
+  font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.62;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color: inherit; text-decoration: none; }
+
+h1,h2,h3{
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
+  font-weight: 500; letter-spacing: -0.012em; margin: 0 0 .5em; color: var(--pine-deep);
+}
+h2{ font-size: clamp(1.625rem, 2.8vw, 2.25rem); line-height: 1.2; }
+/* Heading level is set by where a heading sits in the document, not by
+   how large it should look, so several h2s and h3s below are resized
+   down to what their section wants. Subcommittee names, footer columns
+   and facet labels were all h4s picked for their size, which left holes
+   in the outline that a screen reader reads as missing sections. */
+p{ margin: 0 0 1em; }
+
+.container{ max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(22px, 4vw, 52px); }
+
+/* section label - just the word, set large enough to read comfortably.
+   An earlier version put a short rule before it; at 14px the rule was
+   carrying the emphasis the type should have been carrying itself. */
+.eyebrow{
+  display:block;
+  font-size: 1.0625rem; font-weight: 700; letter-spacing: 0; text-transform: none;
+  color: var(--clay-deep); margin-bottom: 12px;
+}
+
+.section{ padding: 76px 0; }
+.section--tight{ padding: 52px 0; }
+.section--soft{ background: var(--paper-soft); }
+.center{ text-align:center; }
+.lede{ font-size: 1.1875rem; color: var(--ink-soft); max-width: 62ch; }
+.center .lede{ margin-left:auto; margin-right:auto; }
+
+/* ---- header: everything grouped left, contact as a plain link ---- */
+.site-header{ background: var(--paper); border-bottom: 1px solid var(--line); }
+/* The nav does not wrap. It used to, and the failure was ugly and easy
+   to miss: the links stayed put while "Get in touch" and the gear dropped
+   onto a second line, so the header silently became two rows somewhere
+   around 1000px with no breakpoint responsible for it.
+
+   Two changes stop that. The gaps are fluid, so the row tightens from
+   44px down to 20px as the window narrows instead of holding its spacing
+   until it runs out of room; and nowrap means that if a fallback font
+   renders wider than expected, the nav compresses rather than splitting.
+   The hamburger then takes over at 1040px, comfortably above the ~1005px
+   where the measured content stops fitting. */
+.nav{ display:flex; align-items:baseline; justify-content:flex-start; gap: clamp(20px, 2.6vw, 44px); flex-wrap:nowrap; padding-top: 22px; padding-bottom: 18px; }
+.nav__logo{ flex-shrink:0; }
+.wordmark{ font-family:"Newsreader", Georgia, serif; font-size: 1.5rem; font-weight: 600; letter-spacing:-.015em; color: var(--pine-deep); white-space:nowrap; }
+.wordmark .at{ color: var(--clay); }
+.nav__links{ display:flex; align-items:baseline; gap: clamp(16px, 1.9vw, 30px); list-style:none; margin:0; padding:0; min-width:0; }
+.nav__links a{ font-size: 1rem; font-weight: 500; color: var(--ink-soft); padding-bottom: 3px; border-bottom: 2px solid transparent; white-space:nowrap; }
+.nav__links a:hover{ color: var(--pine); }
+.nav__links a.active{ color: var(--pine-deep); font-weight:700; border-color: var(--clay); }
+.nav__cta{ margin-left:auto; display:flex; align-items:baseline; gap: clamp(12px, 1.2vw, 18px); flex:none; }
+.nav__cta .btn{
+  background:none; border:0; padding:0; border-radius:0; color: var(--pine);
+  font-size:1rem; font-weight:600; text-transform:none; letter-spacing:0; white-space:nowrap;
+  text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1.5px;
+}
+.nav__cta .btn:hover{ color: var(--clay-deep); }
+.nav__cta .btn.active{ color: var(--pine-deep); font-weight:700; text-decoration-thickness:2px; }
+.nav__toggle{ display:none; background:none; border:none; cursor:pointer; padding:8px; }
+.nav__toggle span{ display:block; width:24px; height:2px; background: var(--pine); margin:5px 0; border-radius:2px; transition: transform var(--motion) ease, opacity var(--motion) ease; }
+.nav__toggle.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+.nav__toggle.open span:nth-child(2){ opacity:0; }
+.nav__toggle.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+.nav__mobile-contact,
+.nav__mobile-settings{ display:none; }
+
+/* The settings trigger inside the collapsed menu. It is a button, not a
+   link, so it needs the anchor styling restated; the mobile query below
+   gives it the same padding as the links so the two read as one list. */
+.nav__settings{
+  font-family:inherit; font-size:1rem; font-weight:500; color: var(--ink-soft);
+  background:none; border:0; width:100%; text-align:left; cursor:pointer;
+}
+.nav__settings:hover{ color: var(--pine); }
+.nav__settings[aria-expanded="true"]{ color: var(--pine-deep); font-weight:700; }
+
+/* ---- display settings: the gear, and the panel it opens ----
+   Above 1040px this is a gear at the right of the header. Below it the
+   gear is hidden and the same panel is opened by a "Settings" row at the
+   foot of the collapsed menu. That is one extra tap for someone who
+   needs larger text, which is a real cost; it buys a header that is a
+   wordmark and a hamburger and nothing else, and the row is spelled out
+   in words rather than left as an icon to decode. */
+.nav__gear{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:31px; height:31px; flex:none; align-self:center;
+  background:none; border:1px solid var(--line-control); border-radius:8px;
+  color: var(--pine); cursor:pointer; padding:0;
+  transition: background var(--motion) ease, border-color var(--motion) ease, color var(--motion) ease;
+}
+/* 31px box, 16px glyph. The button reads as a quiet control beside the
+   "Get in touch" link rather than competing with it, which is what the
+   earlier 38px box did. It is below the 44px touch-target guidance, but
+   only on the desktop breakpoint: under 1040px the gear is replaced by a
+   full-width "Settings" row in the menu, which clears 44px easily. */
+.nav__gear svg{ width:16px; height:16px; }
+.nav__gear:hover{ background: var(--pine-tint); border-color: var(--pine); }
+.nav__gear[aria-expanded="true"]{ background: var(--pine); border-color: var(--pine); color: var(--on-pine); }
+
+.a11y{ position:relative; display:flex; align-items:center; }
+.a11y__panel{
+  position:absolute; top: calc(100% + 12px); right:0; z-index:70;
+  width: 336px; max-width: calc(100vw - 32px);
+  background: var(--paper); border:1px solid var(--line-control);
+  border-radius: var(--radius); padding: 18px 18px 14px;
+  box-shadow: var(--shadow);
+}
+.a11y__panel[hidden]{ display:none; }
+/* Titled with a <p>, not an <h2>. The panel sits in the header, so a
+   real heading here would land above every page's h1 and put a stray
+   stop at the top of the screen-reader heading list. aria-labelledby
+   gives the group its name without touching the outline. */
+.a11y__title{
+  font-family:"Public Sans", Helvetica, Arial, sans-serif;
+  font-size: 1rem; font-weight:700; letter-spacing:0; color: var(--ink); margin:0 0 2px;
+}
+.a11y__panel .a11y__note{ font-size:0.8125rem; color: var(--ink-soft); margin:0 0 14px; }
+
+.a11y__row{
+  display:flex; align-items:flex-start; gap:14px; justify-content:space-between;
+  width:100%; text-align:left; font-family:inherit; cursor:pointer;
+  background: var(--paper-soft); border:1px solid var(--line);
+  border-radius:10px; padding: 11px 13px; margin-bottom:8px;
+  transition: border-color var(--motion) ease, background var(--motion) ease;
+}
+.a11y__row:hover{ border-color: var(--line-control); }
+.a11y__row[aria-checked="true"]{ background: var(--pine-tint); border-color: var(--pine); }
+.a11y__row .lbl{ display:block; font-size:0.9375rem; font-weight:700; color: var(--ink); }
+.a11y__row .desc{ display:block; font-size:0.8125rem; font-weight:400; color: var(--ink-soft); line-height:1.45; }
+.a11y__switch{
+  flex:none; width:40px; height:23px; border-radius:999px; margin-top:3px;
+  background: var(--line-control); position:relative;
+  transition: background var(--motion) ease;
+}
+.a11y__switch::after{
+  content:""; position:absolute; top:3px; left:3px; width:17px; height:17px;
+  border-radius:50%; background: var(--paper);
+  transition: transform var(--motion) ease;
+}
+.a11y__row[aria-checked="true"] .a11y__switch{ background: var(--pine); }
+.a11y__row[aria-checked="true"] .a11y__switch::after{ transform: translateX(17px); }
+.a11y__reset{
+  font-family:inherit; font-size:0.8125rem; font-weight:700; color: var(--pine);
+  background:none; border:0; padding:6px 2px 0; cursor:pointer;
+  text-decoration:underline; text-underline-offset:4px;
+}
+.a11y__reset:hover{ color: var(--clay-deep); }
+
+@media (max-width: 1040px){
+  .nav{ position: relative; align-items:center; }
+  .nav__toggle{ display:block; }
+  .nav__cta .btn{ display:none; }
+  .nav__gear{ display:none; }
+  .nav__mobile-contact,
+  .nav__mobile-settings{ display:block; }
+  .nav__links{
+    position:absolute; top: calc(100% + 12px); left:0; right:0;
+    flex-direction:column; align-items:stretch; gap:0;
+    margin:0; padding: 6px 0; background: var(--paper);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    display:none; z-index:60;
+  }
+  .nav__links.open{ display:flex; }
+  /* The card is full-bleed, so its left edge sits outside the container
+     gutter. The indent therefore has to come from the rows themselves,
+     and it is the same clamp the container uses, so menu text lines up
+     under the wordmark instead of running to the screen edge. */
+  .nav__links a,
+  .nav__settings{ display:block; padding: 13px clamp(22px, 4vw, 52px); border-bottom:0; font-size:1.0625rem; }
+  .nav__links a.active{ border-bottom:0; }
+
+  /* Settings opens in place of the menu rather than floating off a gear
+     that no longer exists at this width. Dropping .a11y out of the
+     positioning chain hands the panel to .nav, and repeating the menu's
+     own geometry lands it exactly where the list was. */
+  .a11y{ position:static; }
+  .a11y__panel{
+    top: calc(100% + 12px); left:0; right:0; width:auto; max-width:none;
+    border-radius:0; border-left:0; border-right:0; box-shadow:none;
+    padding: 18px clamp(22px, 4vw, 52px) 14px;
+  }
+}
+
+/* ---- front door: reading column + a rail of boxed links ---- */
+.frontdoor{ padding: 64px 0 96px; }
+.frontdoor__intro{ max-width: 66ch; margin-bottom: 56px; }
+.frontdoor__intro h1{
+  font-size: clamp(2.375rem, 5.2vw, 3.875rem); line-height:1.04; margin: 0 0 14px;
+  color: var(--pine-deep);
+}
+.frontdoor__intro .frontdoor__sub{
+  font-family:"Newsreader", Georgia, serif; font-weight:400;
+  font-size: clamp(1.375rem, 2.5vw, 1.875rem); line-height:1.28;
+  color: var(--pine); margin: 0 0 22px; max-width: 26ch;
+}
+.frontdoor__intro .frontdoor__sub em{ font-style: italic; color: var(--clay-deep); }
+.frontdoor__intro .lede{ font-size: 1.15625rem; max-width: 54ch; }
+.frontdoor__mark{ width:64px; height:5px; background: var(--pine); margin-bottom: 30px; }
+
+.split{ display:grid; grid-template-columns: minmax(0,1fr) var(--rail); gap: 72px; align-items:start; }
+@media (max-width: 1000px){ .split{ grid-template-columns: 1fr; gap: 48px; } }
+
+/* the reading column */
+.read h2{ margin-bottom: 16px; }
+.read .block + .block{ margin-top: 56px; padding-top: 56px; border-top: 1px solid var(--line); }
+.read p{ font-size: 1.09375rem; color: var(--ink-soft); max-width: 60ch; }
+.read p b, .read p strong{ color: var(--ink); }
+
+/* hanging definition rows - a shape Neoclease has nowhere */
+.defs{ margin: 24px 0 0; display:grid; gap: 0; }
+.defs__row{ display:grid; grid-template-columns: clamp(120px, 16vw, 168px) minmax(0,1fr); gap: 24px; padding: 16px 0; border-top: 1px solid var(--line); }
+.defs__row:last-child{ border-bottom: 1px solid var(--line); }
+.defs__term{ font-family:"Newsreader", Georgia, serif; font-size: 1.3125rem; font-weight:600; color: var(--pine); }
+.defs__desc{ font-size: 1.03125rem; color: var(--ink-soft); margin:0; }
+@media (max-width: 560px){ .defs__row{ grid-template-columns: 1fr; gap: 4px; } }
+
+/* a plain figure list, not stat tiles */
+.facts{ list-style:none; margin: 22px 0 0; padding:0; display:grid; gap: 12px; }
+.facts li{ display:grid; grid-template-columns: 44px minmax(0,1fr); gap: 16px; align-items:baseline; font-size:1.03125rem; line-height:1.62; color: var(--ink-soft); }
+.facts .fig{ font-family:"Newsreader", Georgia, serif; font-size: 1.3125rem; font-weight:600; line-height:1.62; color: var(--clay-deep); font-variant-numeric: tabular-nums; }
+
+/* the rail */
+.rail{ position: sticky; top: 24px; display:flex; flex-direction:column; gap: 12px; }
+@media (max-width: 1000px){ .rail{ position:static; } }
+.rail__head{ font-size:0.875rem; font-weight:700; color: var(--ink-soft); margin: 0 0 4px; }
+.railbox{
+  display:block; background: var(--paper); border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--pine); border-radius: var(--radius);
+  padding: 18px 20px; transition: background var(--motion) ease, border-left-color var(--motion) ease;
+}
+.railbox:hover{ background: var(--pine-tint); }
+.railbox h3{ font-size: 1.125rem; margin: 0 0 4px; font-family:"Public Sans", Helvetica, Arial, sans-serif; font-weight:700; letter-spacing:0; }
+.railbox p{ font-size: 0.9375rem; color: var(--ink-soft); margin: 0 0 10px; }
+.railbox .go{ font-size: 0.90625rem; font-weight:700; color: var(--pine); }
+.railbox--accent{ border-left-color: var(--clay); background: var(--clay-tint); border-color: var(--clay-tint); }
+.railbox--accent:hover{ background: var(--clay-tint); border-color: var(--clay); }
+.railbox--accent h3{ color: var(--clay-deep); }
+.railbox--accent .go{ color: var(--clay-deep); }
+
+/* ---- interior page title: a rule and a headline on paper ---- */
+.page-head{ padding: 56px 0 44px; border-bottom: 1px solid var(--line); }
+.page-head h1{ margin:0 0 16px; font-size: clamp(2rem, 3.8vw, 2.875rem); line-height:1.1; max-width: 20ch; color: var(--pine-deep); }
+.page-head p.lede{ margin:0; }
+.page-head .frontdoor__mark{ margin-bottom: 24px; }
+
+/* grids - auto-fit rather than a fixed count with a breakpoint under it.
+   The old rule went from three columns straight to one at 900px, so a
+   tablet held six project cards in a single narrow stack with half the
+   window empty beside it. auto-fit drops to two, then one, wherever the
+   content actually stops fitting, which is a different width on each
+   page and is not something a breakpoint can know. */
+.grid-2{ display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 34px 48px; align-items:start; }
+.grid-3{ display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 268px), 1fr)); gap: 40px 36px; }
+
+/* cards - bordered, square-ish, no shadow */
+.card{ background: var(--paper); border:1px solid var(--line-strong); border-radius: var(--radius); padding: 26px 28px; }
+.card h3{ font-size:1.25rem; }
+.card p{ color:var(--ink-soft); font-size:1rem; margin:0; }
+.pill{ display:inline-block; font-size:0.84375rem; font-weight:700; padding:3px 11px; border-radius:6px; background: var(--pine-tint); color: var(--pine); }
+.pill.clay{ background: var(--clay-tint); color: var(--clay-deep); }
+.divider{ height:1px; background: var(--line); margin: 48px 0; }
+.icon-badge{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; background: var(--pine-tint); color: var(--pine); margin-bottom:16px; }
+.icon-badge.clay{ background: var(--clay-tint); color: var(--clay-deep); }
+.icon-badge svg{ width:22px; height:22px; }
+
+/* buttons - sentence case, square-ish */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding: 13px 22px; border-radius: 8px; font-weight: 700; font-size: 1rem;
+  font-family:inherit; text-transform:none; letter-spacing:0;
+  border: 2px solid transparent; cursor:pointer;
+  transition: background var(--motion) ease, color var(--motion) ease, border-color var(--motion) ease;
+}
+.btn--primary{ background: var(--pine); color: var(--on-pine); }
+.btn--primary:hover{ background: var(--pine-deep); }
+.btn--outline{ background: transparent; border-color: var(--pine); color: var(--pine); }
+.btn--outline:hover{ background: var(--pine); color: var(--on-pine); }
+.btn-row{ display:flex; gap:14px; flex-wrap: wrap; }
+.center .btn-row{ justify-content:center; }
+
+/* ---- finder ---- */
+.finder{ display:grid; grid-template-columns: clamp(198px, 22vw, 250px) minmax(0,1fr); gap: clamp(30px, 4vw, 52px); align-items:start; }
+@media (max-width: 900px){ .finder{ grid-template-columns:1fr; gap:28px; } }
+.searchbar{ margin-bottom: 34px; max-width: 760px; }
+.searchbar input{
+  width:100%; border:1px solid var(--line-control); border-radius: 8px; padding: 14px 16px;
+  font-size:1.03125rem; font-family:inherit; color:var(--ink); background: var(--paper);
+}
+.searchbar input:focus{ outline:2px solid var(--pine); outline-offset:1px; }
+.searchbar .note{ font-size:0.90625rem; color:var(--ink-soft); margin: 10px 0 0; }
+.facet{ margin-bottom: 24px; }
+.facet h3{ font-family:"Public Sans", Helvetica, Arial, sans-serif; font-weight:700; letter-spacing:0; font-size:0.875rem; color:var(--ink); margin:0 0 10px; }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  font-family:inherit; font-size:0.875rem; cursor:pointer;
+  background: var(--paper); color:var(--ink-soft); border:1px solid var(--line-control);
+  border-radius:6px; padding:5px 11px;
+}
+.chip .n{ font-size:0.75rem; opacity:.75; margin-left:6px; }
+.chip:hover{ border-color: var(--pine); color: var(--ink); }
+.chip[aria-pressed="true"]{ background: var(--pine); border-color: var(--pine); color: var(--on-pine); font-weight:700; }
+.chip[aria-pressed="true"] .n{ color: var(--on-pine); opacity:.85; }
+.resulthead{ display:flex; gap:12px 20px; flex-wrap:wrap; align-items:baseline; justify-content:space-between; padding-bottom:14px; border-bottom:2px solid var(--pine); margin-bottom:0; }
+.resulthead .count{ font-size:1rem; color:var(--ink-soft); margin:0; }
+.resulthead .count b{ color:var(--ink); }
+.resulthead label{ font-size:0.90625rem; color:var(--ink-soft); display:flex; gap:8px; align-items:center; }
+.resulthead select{ font-family:inherit; font-size:0.90625rem; padding:6px 10px; border:1px solid var(--line-control); border-radius:6px; background:var(--paper); color:var(--ink); }
+
+/* results read as a list of records, not a stack of cards */
+.people{ display:flex; flex-direction:column; }
+.person{ padding: 26px 0; border-bottom: 1px solid var(--line); }
+.person__top{ display:flex; gap:10px 20px; flex-wrap:wrap; align-items:baseline; justify-content:space-between; margin-bottom:12px; }
+.person h3{ font-size:1.4375rem; margin:0 0 2px; }
+.person .role{ font-size:0.9375rem; color:var(--ink-soft); }
+.tag-list{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px; }
+.tag{ font-size:0.84375rem; padding:3px 10px; border-radius:6px; background: var(--paper-soft); color:var(--ink-soft); border:1px solid var(--line); }
+.tag.topic{ background: var(--pine-tint); color: var(--pine); border-color: transparent; font-weight:600; }
+.person p{ font-size:1.03125rem; color:var(--ink-soft); margin:0 0 6px; max-width: 70ch; }
+.person p b{ color:var(--ink); }
+.person__open{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px; }
+.person__open .lbl{ font-size:0.84375rem; color:var(--ink-soft); font-weight:700; }
+.person__open .open{ font-size:0.84375rem; padding:3px 11px; border-radius:6px; border:1px solid var(--line-strong); color:var(--ink-soft); }
+
+/* freshness - CEPAR's own device */
+.fresh{ display:inline-flex; align-items:center; gap:8px; font-size:0.84375rem; font-weight:700; padding:4px 11px; border-radius:6px; white-space:nowrap; }
+.fresh .pip{ width:8px; height:8px; border-radius:50%; flex:none; }
+.fresh--ok{ background: var(--pine-tint); color: var(--pine); }
+.fresh--ok .pip{ background: var(--pine); }
+.fresh--age{ background: var(--amber-tint); color: var(--amber); }
+.fresh--age .pip{ background: var(--amber); }
+.fresh--old{ background: var(--clay-tint); color: var(--clay-deep); }
+.fresh--old .pip{ background: var(--clay); }
+
+.empty{ padding: 44px 0; color:var(--ink-soft); border-bottom:1px solid var(--line); }
+.empty button{ font-family:inherit; font-size:1rem; background:none; border:0; color:var(--pine); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0; }
+.reset-link{ color: var(--pine); font-weight:700; text-decoration:underline; text-underline-offset:4px; }
+.reset-link:hover{ color: var(--clay-deep); }
+
+/* ---- timeline ---- */
+.timeline{ margin-bottom: 40px; }
+.era{ display:grid; grid-template-columns: clamp(118px, 15vw, 160px) minmax(0,1fr); gap: clamp(18px, 2.4vw, 28px); padding: 20px 0; border-top:1px solid var(--line); }
+.era:last-child{ border-bottom:1px solid var(--line); }
+.era .yr{ font-family:"Newsreader", Georgia, serif; font-size:1.1875rem; font-weight:600; color: var(--clay-deep); font-variant-numeric: tabular-nums; }
+.era .ev{ font-size:1.0625rem; color: var(--ink-soft); margin:0; max-width: 62ch; }
+.era .ev b{ color: var(--ink); font-weight:700; }
+@media (max-width: 600px){ .era{ grid-template-columns:1fr; gap:6px; } }
+
+/* projects and steps - a rule on top, then text. No box, nothing stretched. */
+.project, .step{
+  display:flex; flex-direction:column; align-items:flex-start; gap:12px;
+  padding: 22px 0 0; border-top: 2px solid var(--pine); background:none; border-radius:0;
+}
+.project > *, .step > *{ align-self: flex-start; max-width:100%; }
+.project h3, .step h3{ font-size:1.3125rem; margin:0; }
+.project p, .step p{ font-size:1rem; color:var(--ink-soft); margin:0; }
+.project .partner{ font-size:0.9375rem; margin-top:auto; padding-top:8px; }
+.project .partner b{ color:var(--ink); }
+
+/* ---- upkeep ---- */
+.step .num{ font-size:0.875rem; font-weight:700; color: var(--clay-deep); margin:0; }
+.ledger{ border:1px solid var(--line-strong); border-left: 4px solid var(--clay); border-radius: var(--radius); padding: 30px 32px; margin-top: 40px; max-width: 800px; }
+.ledger h2, .ledger h3{ margin-bottom:18px; font-size:1.3125rem; line-height:1.25; }
+.ledger table{ width:100%; border-collapse:collapse; font-size:1rem; }
+.ledger th, .ledger td{ padding:10px 0; border-bottom:1px solid var(--line); color: var(--ink-soft); vertical-align:baseline; text-align:left; font-weight:400; }
+.ledger tr:last-child th, .ledger tr:last-child td{ border-bottom:0; font-weight:700; color: var(--ink); }
+.ledger td:last-child{ text-align:right; white-space:nowrap; padding-left:16px; font-variant-numeric: tabular-nums; }
+.ledger .caveat{ font-size:0.9375rem; color: var(--ink-soft); margin: 16px 0 0; }
+.list-check{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px; }
+.list-check li{ display:flex; gap:14px; align-items:flex-start; color:var(--ink-soft); font-size:1.03125rem; }
+.list-check li svg{ flex:none; width:20px; height:20px; color: var(--clay); margin-top:4px; }
+.list-check b{ color: var(--ink); }
+
+/* closing band - the one solid colour moment on a page */
+.cta-divider{ background: var(--band-bg); color: var(--band-ink); padding: 64px 0; }
+.cta-divider h2{ color: var(--band-ink); margin-bottom:10px; }
+.cta-divider p{ color: var(--band-ink-soft); }
+.cta-divider .btn--primary{ background: var(--band-btn-bg); color: var(--band-btn-ink); }
+.cta-divider .btn--primary:hover{ background: var(--band-btn-hover); color: var(--band-btn-ink); }
+
+/* footer - light, left-aligned, ruled */
+.site-footer{ background: var(--paper); color: var(--ink-soft); padding: 52px 0 30px; border-top: 1px solid var(--line); }
+.footer-grid{ display:grid; grid-template-columns: 1.7fr 1fr 1fr 1fr; gap: 32px 40px; margin-bottom: 36px; }
+.footer-grid h2{ font-family:"Public Sans", Helvetica, Arial, sans-serif; font-weight:700; letter-spacing:0; color: var(--ink); font-size:0.9375rem; margin:0 0 12px; }
+.footer-grid ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px; }
+.footer-grid a, .footer-grid li{ font-size:0.96875rem; color: var(--ink-soft); }
+.footer-grid a:hover{ color: var(--pine); }
+.footer-logo{ display:inline-block; margin-bottom:12px; }
+.footer-bottom{ border-top:1px solid var(--line); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.875rem; color: var(--ink-soft); }
+@media (max-width: 800px){ .footer-grid{ grid-template-columns: 1fr 1fr; } }
+@media (max-width: 430px){ .footer-grid{ grid-template-columns: 1fr; } }
+
+/* prototype notice */
+.proto-bar{ background: var(--proto-bg); color: var(--proto-ink); font-size:0.875rem; padding: 10px 0; }
+.proto-bar .container{ display:flex; gap:8px 16px; flex-wrap:wrap; }
+.proto-bar b{ color: var(--proto-accent); }
+
+
+/* ---- two utilities the accessibility work needs ----
+   sr-only names a region for a screen reader without putting a visible
+   heading on the page; it is how the filter column and the upkeep table
+   get labels that sighted readers already get from layout. The skip link
+   is 2.4.1: without it, reaching the content of any page by keyboard
+   means tabbing past the whole nav first, on every page. It is visible
+   the moment it takes focus, which is the only time it is useful. */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+.skip-link{
+  position:absolute; left:8px; top:-64px; z-index:100;
+  background: var(--pine); color: var(--on-pine);
+  font-weight:700; font-size:0.9375rem; padding:11px 18px;
+  border-radius:0 0 8px 8px;
+  transition: top var(--motion) ease;
+}
+.skip-link:focus{ top:0; }
+[data-motion="reduce"] .skip-link{ transition:none; }
+
+:where(a, button, input, select):focus-visible{ outline: 3px solid var(--clay); outline-offset: 2px; border-radius: 3px; }
+[data-toc]{ scroll-margin-top: 24px; }
+
+@media (max-width: 600px){
+  .container{ padding: 0 22px; }
+  .section{ padding: 52px 0; }
+  .frontdoor{ padding: 40px 0 60px; }
+  .frontdoor__intro{ margin-bottom: 40px; }
+  .cta-divider{ padding: 48px 0; }
+}
+
+
+/* ---- event ---- */
+.event{ border-top:2px solid var(--clay); padding-top:22px; display:grid; grid-template-columns: clamp(110px, 14vw, 136px) minmax(0,1fr); gap: clamp(18px, 2.4vw, 28px); }
+@media (max-width:600px){ .event{ grid-template-columns:1fr; gap:10px; } }
+.event__when{ font-family:"Newsreader", Georgia, serif; font-size:1.1875rem; font-weight:600; color:var(--clay-deep); line-height:1.25; }
+.event__when span{ display:block; font-family:"Public Sans", Helvetica, Arial, sans-serif; font-size:0.875rem; font-weight:400; color:var(--ink-soft); }
+.event h3{ font-size:1.375rem; margin:0 0 8px; }
+.event p{ font-size:1.03125rem; color:var(--ink-soft); margin:0 0 12px; max-width:62ch; }
+.event + .event{ margin-top:36px; }
+.event--past{ border-top-color: var(--line-strong); }
+.event--past .event__when{ color: var(--ink-soft); }
+
+/* ---- contact ---- */
+.contact-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 34px 36px; }
+.contact-card{ border-top:2px solid var(--pine); padding-top:20px; }
+.contact-card h3{ font-size:1.25rem; margin:0 0 2px; }
+.contact-card .who{ font-size:0.9375rem; color:var(--ink-soft); margin:0 0 10px; }
+.contact-card a{ color:var(--pine); font-weight:600; text-decoration:underline; text-underline-offset:4px; word-break:break-word; }
+.contact-card a:hover{ color:var(--clay-deep); }
+.contact-card p{ font-size:1rem; color:var(--ink-soft); margin:0 0 8px; }
+
+/* ---- subcommittees ---- */
+.subs{ display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 0 40px; margin-top:20px; }
+.subs div{ padding:16px 0; border-top:1px solid var(--line); }
+.subs h3{ font-family:"Public Sans", Helvetica, Arial, sans-serif; font-weight:700; letter-spacing:0; font-size:1.03125rem; margin:0 0 3px; color:var(--pine); }
+.subs p{ font-size:0.96875rem; color:var(--ink-soft); margin:0; }

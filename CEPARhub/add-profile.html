@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add or update your profile | CEPAR at Tufts</title>
+<meta name="description" content="Add yourself to the CEPAR@Tufts directory, or update an existing profile. Submissions are reviewed before they appear.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>
+/* Display settings are applied here, before the first paint, rather than
+   in a11y.js at the end of the body. Anything later and every page load
+   flashes the light theme before dark mode arrives. */
+try{var s=JSON.parse(localStorage.getItem("cepar-display"))||{},r=document.documentElement;
+if(s.text)r.setAttribute("data-text","large");
+if(s.contrast)r.setAttribute("data-contrast","high");
+if(s.motion)r.setAttribute("data-motion","reduce");
+if(s.theme)r.setAttribute("data-theme","dark");}catch(e){}
+</script>
+
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+
+<div class="proto-bar">
+  <div class="container">
+    <span><b>Prototype.</b> ENP161 Group 4, concept for discussion with CEPAR.</span>
+    <span>Coalition information, contacts and events come from CEPAR's current page. Directory profiles and projects are invented samples.</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav__logo"><span class="wordmark">CEPAR<span class="at">@</span>Tufts</span></a>
+    <nav>
+      <ul class="nav__links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About CEPAR</a></li>
+        <li><a href="find.html">Directory</a></li>
+        <li><a href="work.html">Projects &amp; Impact</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li class="nav__mobile-contact"><a href="contact.html">Get in touch</a></li>
+        <li class="nav__mobile-settings"><button class="nav__settings" type="button" aria-expanded="false" aria-controls="a11y-panel">Settings</button></li>
+      </ul>
+    </nav>
+    <div class="nav__cta">
+      <a href="contact.html" class="btn">Get in touch</a>
+      <div class="a11y">
+        <button class="nav__gear" id="a11y-gear" type="button" aria-expanded="false" aria-controls="a11y-panel" aria-label="Display settings" title="Display settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><path d="M19.2 14.6a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77V9a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
+        </button>
+        <div class="a11y__panel" id="a11y-panel" role="group" aria-labelledby="a11y-title" hidden>
+          <p class="a11y__title" id="a11y-title">Display settings</p>
+          <p class="a11y__note">Saved on this device and applied to every page here.</p>
+          <button type="button" class="a11y__row" role="switch" aria-checked="false" data-setting="text">
+            <span><span class="lbl">Larger text</span><span class="desc">Bumps the page to an 18px base</span></span>
+            <span class="a11y__switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="a11y__row" role="switch" aria-checked="false" data-setting="contrast">
+            <span><span class="lbl">High contrast</span><span class="desc">Stronger borders and text</span></span>
+            <span class="a11y__switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="a11y__row" role="switch" aria-checked="false" data-setting="motion">
+            <span><span class="lbl">Reduce motion</span><span class="desc">Minimizes animations</span></span>
+            <span class="a11y__switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="a11y__row" role="switch" aria-checked="false" data-setting="theme">
+            <span><span class="lbl">Dark mode</span><span class="desc">Easier on the eyes at night</span></span>
+            <span class="a11y__switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="a11y__reset">Reset to defaults</button>
+        </div>
+      </div>
+      <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="page-head">
+  <div class="container">
+    <div class="frontdoor__mark"></div>
+    <span class="eyebrow">Directory</span>
+    <h1>Add or update your profile</h1>
+    <p class="lede">A few minutes, no login. TCRC reviews every new profile and every change before it appears in the directory.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="read">
+
+      <div class="proto-note" role="note"><b>Prototype form.</b> Nothing you enter here is sent or saved. It shows what CEPAR members would be asked.</div>
+
+      <form id="pform" class="pform" novalidate>
+        <div class="form-errors" id="form-errors" tabindex="-1" hidden></div>
+
+        <fieldset class="fset">
+          <legend>Is this a new profile?</legend>
+          <div class="radio-row">
+            <label class="opt"><input type="radio" name="mode" value="new" checked> No, I'm new to the directory</label>
+            <label class="opt"><input type="radio" name="mode" value="edit"> I already have a profile and want to change it</label>
+          </div>
+          <div class="field" id="pick-wrap" hidden>
+            <label for="pick">Which profile is yours?</label>
+            <select id="pick"><option value="">Choose your name</option></select>
+            <p class="hint">We'll fill in what's there now so you only change what's different.</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="fset">
+          <legend>About you</legend>
+          <div class="field">
+            <label for="f-name">Full name <span class="req">required</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Tufts email <span class="req">required</span></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="h-email">
+            <p class="hint" id="h-email">Used only so TCRC can confirm the submission is yours. Not shown publicly.</p>
+          </div>
+          <div class="field">
+            <label for="f-title">Title and department</label>
+            <input id="f-title" name="title" type="text" aria-describedby="h-title" placeholder="e.g. Associate Professor, Sociology">
+            <p class="hint" id="h-title">If you have a Tufts faculty or staff profile, we can take this from there. Fill it in if you don't, or if it's out of date.</p>
+          </div>
+          <div class="field">
+            <label for="f-school">School</label>
+            <select id="f-school" name="school">
+              <option value="">Choose a school</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-photo">Photo (optional)</label>
+            <input id="f-photo" name="photo" type="file" accept="image/png,image/jpeg" aria-describedby="h-photo">
+            <p class="hint" id="h-photo">PNG or JPEG, up to 5 MB. It's cropped to a square and styled to match the site. It shows on your profile page, not in the directory list.</p>
+            <div class="photo-preview" id="photo-preview" hidden><img alt="Preview of your uploaded photo" id="photo-img"><button type="button" class="reset-link as-btn" id="photo-remove">Remove photo</button></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fset">
+          <legend>Your work</legend>
+          <div class="field">
+            <label for="f-blurb">One line about your work <span class="req">required</span></label>
+            <textarea id="f-blurb" name="blurb" rows="2" maxlength="160" required aria-describedby="h-blurb c-blurb"></textarea>
+            <p class="hint"><span id="h-blurb">Shown on your directory card. Plain language, no jargon.</span> <span class="counter" id="c-blurb" aria-live="polite">160 characters left</span></p>
+          </div>
+
+          <div class="field">
+            <span class="flabel" id="l-topics">Topics</span>
+            <p class="hint">Choose from the shared list so people searching find you. Pick up to five.</p>
+            <div class="checks" id="k-topics" role="group" aria-labelledby="l-topics"></div>
+          </div>
+          <div class="field">
+            <span class="flabel" id="l-methods">Methods</span>
+            <div class="checks" id="k-methods" role="group" aria-labelledby="l-methods"></div>
+          </div>
+          <div class="field">
+            <label for="f-suggest">Missing a keyword?</label>
+            <input id="f-suggest" name="suggest" type="text" placeholder="Suggest one, and TCRC will consider adding it to the list">
+          </div>
+
+          <div class="field">
+            <label for="f-questions">Questions you're working on (optional)</label>
+            <textarea id="f-questions" name="questions" rows="3" placeholder="e.g. How do tenant groups use eviction data in city negotiations?"></textarea>
+          </div>
+          <div class="field">
+            <label for="f-partners">Community partners (optional)</label>
+            <input id="f-partners" name="partners" type="text" aria-describedby="h-partners">
+            <p class="hint" id="h-partners">TCRC will check with each partner before their name appears.</p>
+          </div>
+          <fieldset class="field subset">
+            <legend class="flabel">Open to</legend>
+            <div class="checks" id="k-open"></div>
+          </fieldset>
+        </fieldset>
+
+        <fieldset class="fset">
+          <legend>Links (optional)</legend>
+          <p class="hint">A lab site, faculty profile or portfolio. These appear on your profile and open in a new tab.</p>
+          <div class="link-row">
+            <div class="field"><label for="f-l1">Link</label><input id="f-l1" name="link1" type="url" placeholder="https://"></div>
+            <div class="field"><label for="f-l1n">Label</label><input id="f-l1n" name="link1label" type="text" placeholder="e.g. Lab website"></div>
+          </div>
+          <div class="link-row">
+            <div class="field"><label for="f-l2">Second link</label><input id="f-l2" name="link2" type="url" placeholder="https://"></div>
+            <div class="field"><label for="f-l2n">Label</label><input id="f-l2n" name="link2label" type="text" placeholder="e.g. Tufts faculty profile"></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fset">
+          <legend>Showcase a project (optional)</legend>
+          <label class="opt"><input type="checkbox" id="f-showcase" name="showcase" aria-controls="showcase-wrap" aria-expanded="false"> I'd like to feature one project in more depth</label>
+          <div id="showcase-wrap" hidden>
+            <p class="hint">Featured projects get a longer write-up on Projects &amp; Impact, linked from your profile. TCRC will follow up for details and images.</p>
+            <div class="field"><label for="f-ptitle">Project name</label><input id="f-ptitle" name="ptitle" type="text"></div>
+            <div class="field"><label for="f-pdesc">What it is and what it changed</label><textarea id="f-pdesc" name="pdesc" rows="4"></textarea></div>
+          </div>
+        </fieldset>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn--primary" id="submit-btn">Submit for review</button>
+        </div>
+      </form>
+
+      <div class="done" id="done" tabindex="-1" hidden>
+        <h2>Thanks, that's submitted for review</h2>
+        <p id="done-msg">TCRC will review it and add it to the directory, usually within a week. If anything needs checking, they'll email you.</p>
+        <p class="muted">This is a prototype, so nothing was actually sent.</p>
+        <div class="btn-row"><a class="btn btn--outline" href="find.html">Back to the directory</a></div>
+      </div>
+
+    </div>
+
+    <aside class="rail" aria-label="About this form">
+      <p class="rail__head">Good to know</p>
+      <div class="railbox railbox--static">
+        <h3>No account needed</h3>
+        <p>Instead of logins, every change goes through this form and is approved by TCRC. That way no one can edit someone else's profile.</p>
+      </div>
+      <div class="railbox railbox--static">
+        <h3>Keep it short</h3>
+        <p>Only your name, email and one line are required. You can add more any time.</p>
+      </div>
+      <a class="railbox" href="find.html">
+        <h3>Not sure if you're listed?</h3>
+        <p>Search the directory first.</p>
+        <span class="go">Open the directory →</span>
+      </a>
+    </aside>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><span class="wordmark">CEPAR<span class="at">@</span>Tufts</span></div>
+        <p style="font-size:14px; max-width:280px;">A coalition of Tufts researchers advocating for inclusive, participatory and collaborative community research.</p>
+      </div>
+      <div>
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="about.html">About CEPAR</a></li>
+          <li><a href="find.html">Directory</a></li>
+          <li><a href="work.html">Projects &amp; Impact</a></li>
+          <li><a href="events.html">Events</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Connect</h2>
+        <ul>
+          <li><a href="contact.html">Get in touch</a></li>
+          <li><a href="mailto:tcrc@tufts.edu">tcrc@tufts.edu</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Part of</h2>
+        <ul>
+          <li>Tisch College Community Research Center</li>
+          <li>Tufts University</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Prototype, ENP161 Human Factors Engineering, Group 4. Not an official Tufts page.</span>
+      <span>Medford, MA</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/a11y.js"></script>
+<script src="js/people.js"></script>
+<script src="js/profile-form.js"></script>
+</body>
+</html>
